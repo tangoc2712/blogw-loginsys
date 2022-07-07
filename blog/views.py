@@ -136,3 +136,8 @@ def post_search(request):
         "results": results,
     }
     return render(request, "blog/post/search.html", context)
+
+@login_required
+def model_predict(request):
+    context = {}
+    return render(request, "blog/post/model.html", context)

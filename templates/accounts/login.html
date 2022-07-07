@@ -1,5 +1,6 @@
 {% extends 'accounts/base.html' %}
 {% block content %}
+{% load widget_tweaks %}
 
 <section class="signup">
     <div class="container">
@@ -7,6 +8,8 @@
             <form method="POST" id="signup-form" class="signup-form">
                 {% csrf_token %}
                 <h2 class="form-title">Sign In</h2>
+                {% comment %} {{ form.email | add_class:'form_control'}} 
+                {{ form.password | add_class:'form_control'}} {% endcomment %}
                 {% for field in form %}
                 <div class="form-group">
                     {{ field }}

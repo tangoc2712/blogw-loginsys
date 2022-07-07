@@ -168,3 +168,10 @@ input[type="submit"] {
     text-decoration: none;
     background-color: transparent;
 }
+/* .header {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 4px;
+    align-items: center;
+    justify-items: center;
+} */

@@ -38,9 +38,20 @@
                 </li>
                 {% endfor %}
             </ul>
+            {% if user.is_authenticated %}
+                <b><p class=login_name></p></b>
+
+            {% endif %}
+
         </div>
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
+    <script>
+        let login_name = "{{ user.email | safe }}".split("@")[0];
+        $('.login_name').html("Xin chào, " + login_name);
+        let a = "{% static 'tfjs_model/model.json' %}"
+        console.log("aaa: ", a);
+        
+    </script>
 </html>
 {% comment %} send_mail('Django mail', 'This e-mail was sent with Django.', 'taquangngoc.hh31@gmail.com', ['taquangngoc.hh31@gmail.com'], fail_silently=False) {% endcomment %}
