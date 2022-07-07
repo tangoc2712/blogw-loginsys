@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% comment %} {% load blog_tags %} {% endcomment %}
+{% block title %}Tìm kiếm{% endblock %}
+{% block content %}
+    {% if query %}
+        <h1>Kết quả tìm kiếm "{{ query }}"</h1>
+        <h3>
+            {% with results.count as total_results %}
+            Tìm thấy {{ total_results }} bài viết.
+            {% endwith %}
+        </h3>
+        {% for post in results %}
+            <h4><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h4>
+            <p class="date">
+                Xuất bản {{ post.publish }} bởi {{ post.author }}
+            </p>
+            {% empty %}
+            <p>Không có kết quả tìm kiếm nào!</p>
+        {% endfor %}
+        {% else %}
+        <h1>Tìm kiếm bài viết</h1>
+        <form method="get">
+            {{ form.as_p }}
+            <input type="submit" value="Tìm kiếm">
+        </form>
+    {% endif %}
+{% endblock %}

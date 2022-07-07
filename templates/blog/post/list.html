@@ -1,0 +1,20 @@
+{% extends "base.html" %} 
+{% block title %}Học nhạc cùng KiKi{% endblock %} 
+{% block content %}
+<div class="header">
+    <h1>Học nhạc cùng KiKi</h1>
+    <h1>{{ user }}</h1>
+</div>
+{% for post in posts %}
+<div class="container">
+    <h2>
+        <a href="{{ post.get_absolute_url }}"> {{ post.title }} </a>
+    </h2>
+    <div>
+        <p class="date">Xuất bản {{ post.publish }} bởi {{ post.author }}</p>
+        {{ post.body|safe|truncatechars_html:500 }}
+    </div>
+</div>
+{% endfor %} 
+{% include "pagination.html" with page=page_obj %} 
+{% endblock %}
