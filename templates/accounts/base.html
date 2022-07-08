@@ -5,21 +5,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Custom User Auth system</title>
-
-    <!-- Font Icon -->
-    <link rel="stylesheet" href="{% static 'fonts/material-icon/css/material-design-iconic-font.min.css' %}">
-
-    <!-- Vendor CSS Files -->
-  <link href="{% static 'home/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-
+    <title>CadiHelp</title>
+    <link href='https://fonts.googleapis.com/css?family=Hepta Slab' rel='stylesheet'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <!-- Main css -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/logo1.png' %}" />
+
 
 </head>
 <body>
-
     <div class="main">
+        <div class='login_logo'>
+            <img class="login_logo_img" src="{% static 'images/logo.png'%}">
+        </div>
 
         {% block content %}
 
@@ -30,7 +31,6 @@
     </div>
 
     <!-- JS -->
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'js/main.js' %}"></script>
 </body>
 </html>

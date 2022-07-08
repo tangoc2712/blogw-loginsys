@@ -32,6 +32,8 @@ h2 {
 }
 
 #sidebar {
+    position: fixed;
+    z-index: 1;
     width: 20%;
     padding: 10px;
     background: #efefef;

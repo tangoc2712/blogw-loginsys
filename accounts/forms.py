@@ -19,7 +19,7 @@ class UserAdminCreationForm(forms.ModelForm):
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError('Passwords do not match')
+            raise forms.ValidationError('Mật khẩu không trùng khớp')
         return password2
 
     def save(self, commit=True): # save he proovided password in hashed format
@@ -49,27 +49,27 @@ class UserAdminChangeForm(forms.ModelForm):
 
 class LoginForm(forms.Form):
     email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-input',
-                                                                           'placeholder': 'Enter email'}))
+                                                                           'placeholder': 'Nhập email'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-input',
-                                                                                   'placeholder': 'Enter password'}))
+                                                                                   'placeholder': 'Nhập mật khẩu'}))
 
 
 class RegistrationForm(forms.ModelForm):
     '''A form for creating new users. Includes all required fields plus
     repeated password'''
-    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'Enter password'}))
-    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'Confirm password'}))
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'Nhập mật khẩu'}))
+    password2 = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-input', 'placeholder': 'Nhập lại mật khẩu'}))
 
     class Meta:
         model = User
         fields = ['email']
-        widgets = {'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'Enter Email'})}
+        widgets = {'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'Nhập email'})}
 
     def clean_password2(self):  # checking that the two passwords match
         password1 = self.cleaned_data.get('password1')
         password2 = self.cleaned_data.get('password2')
         if password1 and password2 and password1 != password2:
-            raise forms.ValidationError('Passwords do not match')
+            raise forms.ValidationError('Mật khẩu không trùng khớp')
         return password2
 
     def save(self, commit=True): # save the provided password in hashed format
