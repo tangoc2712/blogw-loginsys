@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block home %}
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+</head>
+<div class='live_camera'>
+    <video class="input_video" width="640px" height="360px" hidden></video>
+    <canvas class="output_canvas" width="640px" height="360px" ></canvas>
+    <button id="start-button">Bật webcam</button>
+    <button id="stop-button">Tắt webcam</button>
+</div>
+<div>
+</div>
+<style>
+    .output_canvas, .input_video {
+        transform: rotateY(180deg);
+        -webkit-transform:rotateY(180deg); /* Safari and Chrome */
+        -moz-transform:rotateY(180deg); /* Firefox */
+        border-radius: 10px;
+        padding-left: 0;
+        padding-right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+
+    .live_camera {
+        margin-left: 400px;
+        margin-top: 16px;
+        padding: 20px;
+        width: 680px;
+        height: 400px;
+        background-color: white;
+        border-radius: 10px;
+    }
+
+    #stop-button{
+        margin-top:40px;
+    }
+</style>
+<script type="module">
+    const videoElement = document.getElementsByClassName('input_video')[0];
+    const canvasElement = document.getElementsByClassName('output_canvas')[0];
+    const canvasCtx = canvasElement.getContext('2d');
+    
+    function onResults(results) {
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        // canvasCtx.drawImage(results.segmentationMask, 0, 0,
+        //                     canvasElement.width, canvasElement.height);
+        canvasCtx.drawImage(
+            results.image, 0, 0, canvasElement.width, canvasElement.height);
+        
+        // if (results.leftHandLandmarks !== undefined) {
+        //     console.log("ủa alo: ", results.leftHandLandmarks)
+        // }
+        if (results.leftHandLandmarks) {
+
+            console.log ("I have no one by my side: ", results.leftHandLandmarks)
+            console.log ("Cơn mưa mang em đi thật rồi: ", typeof(results.leftHandLandmarks))
+        }
+        // console.log("ủa alo: ", results.poseLandmarks[0].visibility)
+        // canvasCtx.globalCompositeOperation = 'source-over';
+        // drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS,
+        //                 {color: '#00FF00', lineWidth: 4});
+        // drawLandmarks(canvasCtx, results.poseLandmarks,
+        //             {color: '#FF0000', lineWidth: 2});
+        // drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION,
+        //                 {color: '#C0C0C070', lineWidth: 1});
+        drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS,
+                        {color: '#E5E5E5', lineWidth: 3});
+        //drawLandmarks(canvasCtx, results.leftHandLandmarks,
+        //            {color: '#00FF00', lineWidth: 0.1});
+        drawConnectors(canvasCtx, results.rightHandLandmarks, HAND_CONNECTIONS,
+                        {color: '#000000', lineWidth: 3});
+        //drawLandmarks(canvasCtx, results.rightHandLandmarks,
+        //            {color: '#FF0000', lineWidth: 0.1});
+        canvasCtx.restore();
+    }
+    
+    const holistic = new Holistic({locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`;
+    }});
+    holistic.setOptions({
+      modelComplexity: 1,
+      smoothLandmarks: true,
+      enableSegmentation: true,
+      smoothSegmentation: true,
+      refineFaceLandmarks: true,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5
+    });
+    holistic.onResults(onResults);
+    
+    const camera = new Camera(videoElement, {
+        onFrame: async () => {
+            await holistic.send({image: videoElement});
+        },
+        width: 640,
+        height: 360
+    });
+    $("#start-button").click( function() {
+        alert("Sẽ mất một chút thời gian để load hình ảnh")
+        camera.start();
+    })
+
+    $("#stop-button").click( function() {
+        console.log('tắt tắt tắt tắt');
+        camera.stop();
+    })
+    </script>
+{% endblock home %}

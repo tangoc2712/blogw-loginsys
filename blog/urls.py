@@ -14,5 +14,5 @@ urlpatterns = [
     ),
     path("<int:post_id>/share/", views.post_share, name="post_share"),
     path("search/", views.post_search, name="post_search"),
-    path("model/predict", views.model_predict, name="model_predict"),
+    path("model/", views.model_predict, name="model_predict"),
 ]

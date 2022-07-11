@@ -1,12 +1,3 @@
-from django.contrib import admin
-from django.urls import path, include
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path("", include("blog.urls", namespace="blog")),
-    path('', include('accounts.urls')),
-]
-
 """mysite URL Configuration
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -25,9 +16,11 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from blog.views import home
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path("", include("blog.urls", namespace="blog")),
+    path("blog/", include("blog.urls", namespace="blog")),
     path("", include('accounts.urls')),
+    path("", home, name="home"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

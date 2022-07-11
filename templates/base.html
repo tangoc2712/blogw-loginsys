@@ -3,23 +3,126 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>{% block title %}{% endblock %}</title>
+        <title>CadiHelp</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
         <link href='https://fonts.googleapis.com/css?family=Hepta Slab' rel='stylesheet'>
         <link href="{% static 'css/blog.css' %}" rel="stylesheet" />
         <link rel="icon" type="image/png" href="{% static 'images/logo1.png' %}" />
     </head>
     <body>
-        <div id="content">{% block content %} {% endblock %}</div>
-        <div id="sidebar">
-            <h2>Học nhạc thật đơn giản cùng KiKi</h2>
-            <p><i>Chào các bạn, đây là blog chia sẻ một số kiến thức cơ bản về nhạc lý dành cho các bạn yêu thích với âm nhạc và muốn bắt đầu làm quen và tìm hiểu về nó. Nào cùng mình khám phá nhé!</i></p>
-            <p><a href='{% url "blog:post_list" %}'>Trang chủ</a></p>
-            <p><a href='{% url "blog:post_search" %}'>Tìm kiếm</a></p>
-            <br/>
-            <br/>
+        <div class='login_logo'>
+            <img class="login_logo_img" src="{% static 'images/logo1.png'%}">
+        </div>
+        <div class="sidebar">
+            <div class='sidebar-child'>
+                {% if user.is_authenticated %}
+                <div class=login_name>
+                </div>
+                    <a href="{% url 'accounts:logout' %}" class="basebox logout">
+                        <div class="header_icons ">
+                            <img src="{% static 'icons/dangxuat.svg'%}" class='header_icons logout_icons'>
+                        </div>
+                        <b>Đăng xuất</b>
+                    </a>
+                {% endif %}
+                <div>
+                    <a href='#' class="basebox question">
+                        <div class="header_icons ">
+                            <img src="{% static 'icons/hoidap.svg'%}" class='header_icons question_icons'>
+                        </div>
+                        <b>
 
-            <h3>Bài viết mới nhất</h3>
+                            Hỏi đáp
+                        </b>
+                    </a>
+                </div>
+            </div>
+            <div class='sidebar-child'>
+                <div>
+                    <a href='{% url "blog:post_list" %}' class="basebox lession">
+                        <div class="header_icons">
+                            <img src="{% static 'icons/baihoc.svg'%}" class='header_icons lesson_icons'>
+                        </div>
+                        <b>
+                            
+                            Các bài học
+                        </b>
+                    </a>
+                </div>
+            </div>
+            <div class='sidebar-child'>
+                <div>
+                    <a href='#' class="basebox gameplay">
+                        <div class="header_icons">
+                            <img src="{% static 'icons/game.svg'%}" class='header_icons game_icons'>
+                        </div>
+                        <b>
+                            
+                            Game play
+                        </b>
+                    </a>
+                </div>
+                <div>
+                    <a href='#' class="basebox youtube">
+                        <div class="header_icons">
+                            <img src="{% static 'icons/youtube.svg'%}" class='header_icons youtube_icons'>
+                        </div>
+                        <b>
+                            
+                            Youtube
+                        </b>
+                    </a>
+                </div>
+            </div>
+            <div class='sidebar-child'>
+                <div>
+                    <a href='#' class="basebox support">
+                        <div class="header_icons">
+                            <img src="{% static 'icons/donggop.svg'%}" class='header_icons support_icons'>
+                        </div>
+                        <b>
+                            
+                            Đóng góp
+                        </b>
+                    </a>
+                </div>
+                <div>
+                    <a href='#' class="basebox helpus">
+                        <div class="header_icons">
+                            <img src="{% static 'icons/caithien.svg'%}" class='header_icons helppus_icons'>
+                        </div>
+                        <b>
+                            
+                            Giúp chùng tôi
+                        </b>
+                    </a>
+                </div>
+            </div>
+            <div class='sidebar-child'>
+                <div>
+                    <a href='#' class="basebox info">
+                        <div class="header_icons">
+                            <img src="{% static 'icons/thongtinnguoidung.svg'%}" class='header_icons info_icons'>
+                        </div>
+                        <b>
+                            
+                            Thông tin
+                        </b>
+                    </a>
+                </div>
+                <div>
+                    <a href="{% url 'home' %}" class="basebox setting">
+                        <div class="header_icons">
+                            <img src="{% static 'icons/setting.svg'%}" class='header_icons setting_icons'>
+                        </div>
+                        <b>
+                            
+                            Trang chủ
+                        </b>
+                    </a>
+                </div>
+            </div>
+            {% comment %} <h3>Bài viết mới nhất</h3>
             
             {% show_latest_posts as latest_posts %}
             <ul>
@@ -38,21 +141,25 @@
                 <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
                 </li>
                 {% endfor %}
-            </ul>
-            {% if user.is_authenticated %}
-                <b><p class=login_name></p></b>
-                <a href="{% url 'accounts:logout' %}"><b>Đăng xuất</b></a>
-            {% endif %}
-
+            </ul> {% endcomment %}
+            
         </div>
+        <div class="home">{% block home %} {% endblock %}</div>
+        <div class="content">{% block content %} {% endblock %}</div>
+        
     </body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
         let login_name = "{{ user.email | safe }}".split("@")[0];
-        $('.login_name').html("Xin chào, " + login_name);
+        $('.login_name').html("Xin chào, " + login_name + " !");
         let a = "{% static 'tfjs_model/model.json' %}"
         console.log("aaa: ", a);
         
+        $('.sidebar-child a').click(function(e) {
+            e.preventDefault();
+            $('.sidebar-child a').removeClass('active');
+            $(this).addClass('active');
+        });
     </script>
 </html>
 {% comment %} send_mail('Django mail', 'This e-mail was sent with Django.', 'taquangngoc.hh31@gmail.com', ['taquangngoc.hh31@gmail.com'], fail_silently=False) {% endcomment %}

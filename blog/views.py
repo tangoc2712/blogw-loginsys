@@ -141,3 +141,8 @@ def post_search(request):
 def model_predict(request):
     context = {}
     return render(request, "blog/post/model.html", context)
+
+
+def home(request):
+    context = {}
+    return render(request, 'home.html', context)

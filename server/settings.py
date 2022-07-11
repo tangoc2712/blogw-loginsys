@@ -129,7 +129,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 from django.urls import reverse_lazy
 LOGIN_URL = reverse_lazy('accounts:login')
 LOGOUT_REDIRECT_URL = LOGIN_URL
-LOGIN_REDIRECT_URL = reverse_lazy('blog:post_list') # change this to your home page
+LOGIN_REDIRECT_URL = reverse_lazy('home') # change this to your home page
 
 # email configuration for development
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
