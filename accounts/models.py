@@ -30,6 +30,7 @@ class User(AbstractBaseUser):
     email = models.EmailField(unique=True, max_length=255)
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
+    is_contribute = models.BooleanField(default=False)
     admin = models.BooleanField(default=False)
     timestamp = models.DateTimeField(auto_now_add=True)
 
