@@ -2,16 +2,32 @@
 {% load static %}
 {% block home %}
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
 </head>
 <div class='live_camera'>
-    <video class="input_video" width="640px" height="360px" hidden></video>
-    <canvas class="output_canvas" width="640px" height="360px" ></canvas>
-    <button id="start-button">Bật webcam</button>
-    <button id="stop-button">Tắt webcam</button>
+    <div class="camera_zone"> 
+        <video class="input_video" width="640px" height="360px" hidden></video>
+        <canvas class="output_canvas" width="960px" height="540px" ></canvas>
+        <div id="loadingWrap" hidden>
+            <div class='loading' id='loading'>
+                <div class='loadingMsg'>Loading・・・</div>
+            </div>
+        </div>
+    </div>
+    <div class=button_zone> 
+        <label class="switch">
+            <input type="checkbox" class="toggle-input">
+            <span class="slider round"></span>
+        </label>          
+    </div>
+    
 </div>
 <div>
 </div>
@@ -20,7 +36,7 @@
         transform: rotateY(180deg);
         -webkit-transform:rotateY(180deg); /* Safari and Chrome */
         -moz-transform:rotateY(180deg); /* Firefox */
-        border-radius: 10px;
+        border-radius: 7px;
         padding-left: 0;
         padding-right: 0;
         margin-left: auto;
@@ -29,54 +45,202 @@
     }
 
     .live_camera {
-        margin-left: 35%;
+        margin-left: 25%;
         margin-top: 16px;
-        padding: 20px;
-        width: 680px;
-        height: 400px;
-        background-color: white;
-        border-radius: 10px;
+        /* padding: 20px; */
+        width: 960px;
+        height: 540px;
+        background-color: #ffffff78;
+        border-radius: 7px;
+        display: grid;
+        justify-content: space-between;
+        grid: auto / auto auto;
+        box-shadow: 10px 10px #c7c7c75e;
     }
 
     #stop-button{
         margin-top:40px;
     }
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 60px;
+        height: 34px;
+    }
+    
+    .switch input { 
+    opacity: 0;
+    width: 0;
+    height: 0;
+    }
+    
+    .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+    
+    .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #ffffff78;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+    
+    input:checked + .slider {
+    background-color: #03999e60;
+    }
+    
+    input:focus + .slider {
+    box-shadow: 0 0 1px #03999e60;
+    }
+    
+    input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    }
+    /* Rounded sliders */
+    .slider.round {
+        border-radius: 34px;
+    }
+    
+    .slider.round:before {
+        border-radius: 50%;
+    }
+    .button_zone {
+        padding: 20px;
+        position: fixed;
+    }
+    div.loadingMsg{
+        display: table-cell;
+        text-align: center;
+        vertical-align: middle;
+        padding-top: 140px;
+        background: url("{% static 'images/ok3.gif' %}") center center no-repeat;
+  }
+
+    div.loading {
+        display: table;
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        /* background-color: #fff; */
+        /* opacity: 4.5; */
+    }
+
 </style>
 <script type="module">
-    const videoElement = document.getElementsByClassName('input_video')[0];
-    const canvasElement = document.getElementsByClassName('output_canvas')[0];
+    const LABEL = ['hello', 'thanks', 'i love you'];
+    const videoElement = $('.input_video')[0];
+    const canvasElement = $('.output_canvas')[0];
     const canvasCtx = canvasElement.getContext('2d');
+    let a = "{% static 'tfjs_model/model.json' %}"
+        console.log("aaa: ", a);
     
-    function onResults(results) {
+ 
+    async function make_predict(keypoint) {
+        let model = await tf.loadLayersModel(a);
+        let tensors = tf.expandDims(tf.tensor2d(keypoint), 0)
+        console.log("Loading tensor: ", tensors)
+        // make predict
+        let predictions = await model.predict(tensors);
+        predictions = predictions.dataSync();
+
+        const max = Math.max(...predictions);
+        const index = predictions.indexOf(max);
+        console.log(LABEL[index]);
+        console.log(max);
+    }
+    
+    
+    function get_extract_keypoint(results) {
+        let left_hand_per_frame = []
+        let right_hand_per_frame = []
+        let pose_per_frame = []
+        let face_per_frame = []
+        let left_hand = results.leftHandLandmarks
+        let right_hand = results.rightHandLandmarks
+        let pose = results.poseLandmarks
+        let face = results.faceLandmarks
+        if (left_hand) {
+            for (let i in left_hand ){
+            //    left_hand_per_frame.push(a[i].x, a[i].y, a[i].z)
+                left_hand_per_frame = [...left_hand_per_frame, left_hand[i].x, left_hand[i].y, left_hand[i].z]
+            }
+
+        } else {left_hand_per_frame = Array(63).fill(0);}
+        if( right_hand ) {
+
+            for (let i in right_hand ){
+                //    left_hand_per_frame.push(a[i].x, a[i].y, a[i].z)
+                right_hand_per_frame = [...right_hand_per_frame, right_hand[i].x, right_hand[i].y, right_hand[i].z]
+            }
+        } else {right_hand_per_frame = Array(63).fill(0);}
+        if( pose ) {
+            for (let i in pose ){
+                //    left_hand_per_frame.push(a[i].x, a[i].y, a[i].z)
+                    pose_per_frame = [...pose_per_frame, pose[i].x, pose[i].y, pose[i].z, pose[i].visibility]
+            }
+        } else {pose_per_frame = Array(132).fill(0);}
+        if( face ) {
+            for (let i =0; i < face.length - 10; i++ ){
+                //    left_hand_per_frame.push(a[i].x, a[i].y, a[i].z)
+                face_per_frame = [...face_per_frame, face[i].x, face[i].y, face[i].z]
+            }
+        } else {face_per_frame = Array(1404).fill(0);}
+
+        return [].concat(pose_per_frame, face_per_frame, left_hand_per_frame, right_hand_per_frame)
+
+    }
+    let i = 0;
+    let keypoint = [];
+    let check_full_load = 0;
+
+    async function onResults(results) {
+        $('#loadingWrap').attr("hidden", true);
+        
         canvasCtx.save();
         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        // canvasCtx.drawImage(results.segmentationMask, 0, 0,
-        //                     canvasElement.width, canvasElement.height);
         canvasCtx.drawImage(
             results.image, 0, 0, canvasElement.width, canvasElement.height);
-        
-        // if (results.leftHandLandmarks !== undefined) {
-        //     console.log("ủa alo: ", results.leftHandLandmarks)
-        // }
-        if (results.leftHandLandmarks) {
 
-            console.log ("I have no one by my side: ", results.leftHandLandmarks)
-            console.log ("Cơn mưa mang em đi thật rồi: ", typeof(results.leftHandLandmarks))
+        if (results.leftHandLandmarks || results.rightHandLandmarks) {
+            keypoint.push(get_extract_keypoint(results))
+            if (keypoint.length == 30) {
+                console.log("tôi bắt đầu dự đoán đây")
+                make_predict(keypoint)
+                keypoint = []
+            }
         }
         // console.log("ủa alo: ", results.poseLandmarks[0].visibility)
         // canvasCtx.globalCompositeOperation = 'source-over';
-        // drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS,
-        //                 {color: '#00FF00', lineWidth: 4});
-        // drawLandmarks(canvasCtx, results.poseLandmarks,
-        //             {color: '#FF0000', lineWidth: 2});
-        // drawConnectors(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION,
-        //                 {color: '#C0C0C070', lineWidth: 1});
+        //drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS,
+        //                {color: '#00FF00', lineWidth: 4});
+        //drawLandmarks(canvasCtx, results.poseLandmarks,
+        //            {color: '#FF0000', lineWidth: 2});
+        //(canvasCtx, results.faceLandmarks, FACEMESH_TESSELATION,
+        //                {color: '#C0C0C070', lineWidth: 1});
         drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS,
                         {color: '#E5E5E5', lineWidth: 3});
         //drawLandmarks(canvasCtx, results.leftHandLandmarks,
         //            {color: '#00FF00', lineWidth: 0.1});
         drawConnectors(canvasCtx, results.rightHandLandmarks, HAND_CONNECTIONS,
-                        {color: '#000000', lineWidth: 3});
+                        {color: '#ff00f2', lineWidth: 3});
         //drawLandmarks(canvasCtx, results.rightHandLandmarks,
         //            {color: '#FF0000', lineWidth: 0.1});
         canvasCtx.restore();
@@ -95,22 +259,38 @@
       minTrackingConfidence: 0.5
     });
     holistic.onResults(onResults);
-    
+
     const camera = new Camera(videoElement, {
         onFrame: async () => {
             await holistic.send({image: videoElement});
         },
-        width: 640,
-        height: 360
+        width: 960,
+        height: 540
     });
-    $("#start-button").click( function() {
-        alert("Sẽ mất một chút thời gian để load hình ảnh")
-        camera.start();
-    })
 
-    $("#stop-button").click( function() {
-        console.log('tắt tắt tắt tắt');
-        camera.stop();
-    })
+
+    $('.toggle-input').change(function() {
+        if($(this).is(':checked')) {
+            alert("Sẽ mất một chút thời gian để load hình ảnh")
+            $('.output_canvas').attr("hidden",false);
+            camera.start();
+            
+            $('#loadingWrap').attr("hidden", false);
+        } else {
+            alert("Chúng tôi sẽ tắt hình ảnh")
+            // get reference of the video element the Camera is constructed on
+            const $feed  = $('.input_video')[0]
+            $('.output_canvas').attr("hidden",true);
+            // reset feed source 
+            $feed.pause();
+            $feed.srcObject.getTracks().forEach(a => a.stop());
+            $feed.srcObject = null;
+        }
+    });
+    </script>
+    <script>
+        $( document ).ready(function() {
+            console.log( "ready!" );
+        });
     </script>
 {% endblock home %}

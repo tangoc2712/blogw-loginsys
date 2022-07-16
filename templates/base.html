@@ -154,8 +154,7 @@
     <script>
         let login_name = "{{ user.email | safe }}".split("@")[0];
         $('.login_name').html("Xin chào, " + login_name + " !");
-        let a = "{% static 'tfjs_model/model.json' %}"
-        console.log("aaa: ", a);
+        
         
         $('.sidebar-child a').click(function(e) {
             e.preventDefault();
