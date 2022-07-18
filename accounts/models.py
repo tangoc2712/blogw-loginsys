@@ -29,6 +29,8 @@ class UserManager(BaseUserManager):
 class User(AbstractBaseUser):
     email = models.EmailField(unique=True, max_length=255)
     fullname = models.CharField(null=True, max_length=255, blank=True)
+    phone = models.CharField(null=True, max_length=16, blank=True)
+    facebook = models.CharField(null=True, max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
     staff = models.BooleanField(default=False)
     is_contribute = models.BooleanField(default=False)

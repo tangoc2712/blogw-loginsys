@@ -1,5 +1,6 @@
 from django.db import models
 from django.forms import IntegerField
+from django.conf import settings
 
 # Create your models here.
 
@@ -17,3 +18,10 @@ class Word(models.Model):
 
     def __str__(self) -> str:
         return self.word
+    
+class Point(models.Model):
+    point = models.IntegerField(null = True, blank = True, verbose_name="Point")
+    player = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="player")
+    
+    def __str__(self) -> str:
+        return "".join(self.player)
