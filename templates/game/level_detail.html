@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block home %}
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/holistic/holistic.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+    <link href='https://css.gg/volume.css' rel='stylesheet'>
+</head>
+<div class="pick_level">
+
+    <div class="camera_zone"> 
+        <video class="input_video" width="640px" height="360px" hidden></video>
+        <canvas class="output_canvas" width="960px" height="540px" ></canvas>
+        <div id="loadingWrap" hidden>
+            <div class='loading' id='loading'>
+                <div class='loadingMsg'>Loading・・・</div>
+            </div>
+        </div>
+    </div>
+
+    {% for level in words %}
+    <div class='level_cotainer'>
+        <div class="level_text">{{ level.word }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .output_canvas {
+        
+    }
+    .pick_level {
+        margin-left: 25%;
+        margin-top: 16px;
+        /* padding: 20px; */
+        width: 960px;
+        height: 540px;
+        background-color: #ffffff78;
+        border-radius: 7px;
+        display: flex;
+        justify-content: space-between;
+        /* grid: auto / auto auto; */
+        box-shadow: 10px 10px #c7c7c75e;
+        flex-direction: row;
+    }
+
+    a:link {
+        text-decoration: none;
+    }
+</style>
+
+<script type="module">
+    const videoElement = document.getElementsByClassName('input_video')[0];
+    const canvasElement = document.getElementsByClassName('output_canvas')[0];
+    const canvasCtx = canvasElement.getContext('2d');
+    
+    function onResults(results) {
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        canvasCtx.drawImage(results.segmentationMask, 0, 0,
+        canvasElement.width, canvasElement.height);
+        
+        
+        
+        // Only overwrite existing pixels.
+        //canvasCtx.globalCompositeOperation = 'source-in';
+
+        // Only overwrite missing pixels.
+        
+        //canvasCtx.globalCompositeOperation = 'destination-atop';
+        canvasCtx.drawImage(
+            results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+        canvasCtx.globalCompositeOperation = 'source-over';
+        canvasCtx.fillStyle = '#444444b3';
+        canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+        drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS,
+                        {color: '#CC0000', lineWidth: 5});
+        drawConnectors(canvasCtx, results.rightHandLandmarks, HAND_CONNECTIONS,
+                        {color: '#00CC00', lineWidth: 5});
+
+        
+        canvasCtx.restore();
+    }
+    
+    const holistic = new Holistic({locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`;
+    }});
+    holistic.setOptions({
+      modelComplexity: 1,
+      smoothLandmarks: true,
+      enableSegmentation: true,
+      smoothSegmentation: true,
+      refineFaceLandmarks: true,
+      minDetectionConfidence: 0.5,
+      minTrackingConfidence: 0.5
+    });
+    holistic.onResults(onResults);
+    
+    const camera = new Camera(videoElement, {
+      onFrame: async () => {
+        await holistic.send({image: videoElement});
+      },
+      width: 1280,
+      height: 720
+    });
+    camera.start();
+    </script>
+{% endblock %}

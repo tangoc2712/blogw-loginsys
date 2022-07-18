@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block home %}
+<div class="pick_level">
+    {% for level in levels %}
+    <div class='level_cotainer'>
+        <a class="link" href="{% url 'game:level_detail' level_id=level.level %}">
+            <div class="level_text">{{ level.level }}</div>
+        </a>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    div:nth-of-type(even) {
+        grid-column: 2;
+    }
+    .pick_level {
+        margin-left: 25%;
+        margin-top: 16px;
+        /* padding: 20px; */
+        width: 960px;
+        height: 540px;
+        display: grid;
+        background-color: #e5e5e5;
+        border-radius: 7px;
+        /* justify-content: space-between; */
+        /* grid: auto / auto auto; */
+        padding-top: 20px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .level_cotainer {
+        box-shadow: 5px 5px #c7c7c75e;
+        width: 120px;
+        height: 120px;
+        border-radius: 7px;
+        justify-content: center;
+        background-color: #03989e94;
+    }
+    .level_text{
+        color: white;
+        text-align: center;
+        padding: 38%;
+        font-size: 23px;
+    }
+
+    a:link {
+        text-decoration: none;
+      }
+</style>
+{% endblock %}

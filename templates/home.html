@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+    <link href='https://css.gg/volume.css' rel='stylesheet'>
 </head>
 <div class='live_camera'>
     <div class="camera_zone"> 
@@ -25,13 +26,56 @@
         <label class="switch">
             <input type="checkbox" class="toggle-input">
             <span class="slider round"></span>
-        </label>          
+        </label>  
+        <button class="volume_up" hidden></button>
+        <button class="volume_x"></button>
     </div>
-    
 </div>
-<div>
+
+<div class="text_output_zone"> 
+    <div class="text_loadding" hidden></div>
+    <div class="text_output"></div>
 </div>
+
+<audio controls hidden> 
+    <source class="speech" src="" type="audio/mpeg">
+</audio>
+
+
 <style>
+    .text_loadding {
+        background: url("{% static 'images/texting.gif' %}") center center no-repeat;
+        margin-left: 897px;
+        width: 50px;
+        height: 50px;
+        opacity: 0.6;
+        background-size: 111px;
+        position: absolute;
+    }
+    .volume_up {
+        background: url("{% static 'icons/volume2.svg'%}") center center no-repeat;
+        width: 34px;
+        height: 34px;
+        position: absolute;
+        top: 496px;
+        left: 910px;
+        border: none;
+        opacity: 0.3;
+        background-size: 33px;
+    }
+
+    .volume_x {
+        background: url("{% static 'icons/volumex.svg'%}") center center no-repeat;
+        width: 34px;
+        height: 34px;
+        position: absolute;
+        top: 496px;
+        left: 910px;
+        border: none;
+        opacity: 0.3;
+        background-size: 33px;
+    }
+    
     .output_canvas, .input_video {
         transform: rotateY(180deg);
         -webkit-transform:rotateY(180deg); /* Safari and Chrome */
@@ -52,12 +96,25 @@
         height: 540px;
         background-color: #ffffff78;
         border-radius: 7px;
-        display: grid;
+        display: flex;
         justify-content: space-between;
-        grid: auto / auto auto;
+        /* grid: auto / auto auto; */
         box-shadow: 10px 10px #c7c7c75e;
+        flex-direction: column;
     }
-
+    .text_output_zone {
+        width: 960px;
+        border-radius: 7px;
+        padding: 7px;
+        height: 60px;
+        background-color: #ffffff78;
+        box-shadow: 10px 10px #c7c7c75e;
+        margin-left: 25%;
+        margin-top: 50px;
+    }
+    .text_output {
+        padding-left: 5px;
+    }
     #stop-button{
         margin-top:40px;
     }
@@ -121,7 +178,7 @@
     }
     .button_zone {
         padding: 20px;
-        position: fixed;
+        position: absolute;
     }
     div.loadingMsg{
         display: table-cell;
@@ -135,7 +192,7 @@
         display: table;
         width: 100%;
         height: 100%;
-        position: fixed;
+        position: absolute;
         top: 0;
         left: 0;
         z-index: 9999;
@@ -145,18 +202,27 @@
 
 </style>
 <script type="module">
-    const LABEL = ['hello', 'thanks', 'i love you'];
+    const LABEL = ['hello', 'thanks', 'iloveyou'];
     const videoElement = $('.input_video')[0];
     const canvasElement = $('.output_canvas')[0];
     const canvasCtx = canvasElement.getContext('2d');
     let a = "{% static 'tfjs_model/model.json' %}"
-        console.log("aaa: ", a);
     
- 
+    let output_array = [];
+
+    function playAudio(word) {
+        let url = "{% static 'audio/' %}" + word + ".mp3"
+        let audio_action = $('audio').attr('src', url);
+        let check = $('.volume_up').attr('hidden');
+        
+        if( !check ) {
+            audio_action.get(0).play();
+        } 
+    }
+    
     async function make_predict(keypoint) {
         let model = await tf.loadLayersModel(a);
         let tensors = tf.expandDims(tf.tensor2d(keypoint), 0)
-        console.log("Loading tensor: ", tensors)
         // make predict
         let predictions = await model.predict(tensors);
         predictions = predictions.dataSync();
@@ -164,6 +230,13 @@
         const max = Math.max(...predictions);
         const index = predictions.indexOf(max);
         console.log(LABEL[index]);
+        playAudio(LABEL[index]);
+
+        output_array.push(LABEL[index]);
+
+        let output_array_five = output_array.slice(Math.max(output_array.length - 10, 0));
+        let text = output_array_five.join(",    ");
+        $(".text_output").text(text);
         console.log(max);
     }
     
@@ -212,14 +285,19 @@
     let check_full_load = 0;
 
     async function onResults(results) {
+        //$('.text_loadding').attr("hidden", true);
         $('#loadingWrap').attr("hidden", true);
         
         canvasCtx.save();
+
+        canvasCtx.fillStyle = '#4444444f';
+      canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
         canvasCtx.drawImage(
             results.image, 0, 0, canvasElement.width, canvasElement.height);
 
         if (results.leftHandLandmarks || results.rightHandLandmarks) {
+            //$('.text_loadding').attr("hidden", false);
             keypoint.push(get_extract_keypoint(results))
             if (keypoint.length == 30) {
                 console.log("tôi bắt đầu dự đoán đây")
@@ -227,6 +305,7 @@
                 keypoint = []
             }
         }
+
         // console.log("ủa alo: ", results.poseLandmarks[0].visibility)
         // canvasCtx.globalCompositeOperation = 'source-over';
         //drawConnectors(canvasCtx, results.poseLandmarks, POSE_CONNECTIONS,
@@ -292,5 +371,15 @@
         $( document ).ready(function() {
             console.log( "ready!" );
         });
+
+        $(".volume_up").on('click', function() {
+            $(".volume_up").attr("hidden", true);
+            $(".volume_x").attr("hidden", false);
+        })
+
+        $(".volume_x").on('click', function() {
+            $(".volume_up").attr("hidden", false);
+            $(".volume_x").attr("hidden", true);
+        })
     </script>
 {% endblock home %}

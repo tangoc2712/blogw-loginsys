@@ -30,6 +30,8 @@ INSTALLED_APPS = [
     # custom user app
     'accounts',
     "blog",
+    "game",
+    "helpus",
     # third party apps
     'crispy_forms',
     "ckeditor",
