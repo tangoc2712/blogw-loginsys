@@ -13,15 +13,19 @@ h1 {
     border-bottom: 4px solid #cf820e79;
     padding: 0 0 10px 0;
 }
-
+.comment-form {
+    margin-left: 250px;
+}
 h2 {
     font-weight: bold;
     margin: 30px 0 0;
 }
 .container {
     margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 4px solid#8ea81952;
+    padding: 20px;
+    border-radius: 7px;
+    background-color: white;
+    /*border-bottom: 4px solid#8ea81952;*/
 }
 .basebox {
     display: flex;
@@ -127,6 +131,7 @@ p.date {
 /* pagination */
 .pagination {
     margin: 40px 0;
+    margin-left: 252px;
     font-weight: bold;
 }
 /* .step-links {

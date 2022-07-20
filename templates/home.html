@@ -202,12 +202,12 @@
 
 </style>
 <script type="module">
-    const LABEL = ['hello', 'thanks', 'iloveyou'];
+    const LABEL = ['an_mung', 'an_ui', 'ap_dung', 'ban_khoan', 'benh_nhan', 'be_mac', 'biet', 'bieu_tang', 'bo_y_te', 'cach_ly', 'cam_do', 'cam_on', 'can', 'chap_nhan', 'chay', 'cho', 'dau', 'day_do', 'ghet', 'giup', 'ham_mo', 'hi_sinh', 'ho', 'ket_hon', 'khai_bao', 'khau_trang', 'khu_cach_ly', 'lay_benh', 'lo_lang', 'nghi_ngoi', 'nho', 'noi_xau', 'non_oi', 'phat', 'phong_van', 'phuc_hoi', 'san_se', 'sot', 'tap_luyen', 'tham', 'that_lac', 'thich', 'thuong', 'ung_ho', 'u_benh', 'vang_loi', 'virus', 'xin_phep', 'xuat_vien', 'yeu'];
     const videoElement = $('.input_video')[0];
     const canvasElement = $('.output_canvas')[0];
     const canvasCtx = canvasElement.getContext('2d');
-    let a = "{% static 'tfjs_model/model.json' %}"
-    
+    let a = "{% static 'tfjs/model.json' %}"
+    console.log("aaa:", a)
     let output_array = [];
 
     function playAudio(word) {
@@ -264,6 +264,7 @@
                 right_hand_per_frame = [...right_hand_per_frame, right_hand[i].x, right_hand[i].y, right_hand[i].z]
             }
         } else {right_hand_per_frame = Array(63).fill(0);}
+        /*
         if( pose ) {
             for (let i in pose ){
                 //    left_hand_per_frame.push(a[i].x, a[i].y, a[i].z)
@@ -276,8 +277,8 @@
                 face_per_frame = [...face_per_frame, face[i].x, face[i].y, face[i].z]
             }
         } else {face_per_frame = Array(1404).fill(0);}
-
-        return [].concat(pose_per_frame, face_per_frame, left_hand_per_frame, right_hand_per_frame)
+        */
+        return [].concat(left_hand_per_frame, right_hand_per_frame)
 
     }
     let i = 0;

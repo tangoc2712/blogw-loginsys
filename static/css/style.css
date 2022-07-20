@@ -113,7 +113,6 @@ body {
     max-width: 250px;
 }
 .container {
-  width: 660px;
   position: relative;
   margin: 0 auto; }
 
@@ -318,12 +317,6 @@ input[type=checkbox]:not(old):checked + label > span:before {
   z-index: 2;
   color: #555; }
 
-@media screen and (max-width: 768px) {
-  .container {
-    width: calc(100% - 40px);
-    max-width: 100%; } }
-@media screen and (max-width: 480px) {
-  .signup-content {
-    padding: 50px 25px; } }
+
 
 /*# sourceMappingURL=style.css.map */
