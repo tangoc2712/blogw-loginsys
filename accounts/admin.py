@@ -10,7 +10,7 @@ User = get_user_model()
 
 class UserAdmin(BaseUserAdmin):
     search_fields = ['email']
-    list_display = ['email', 'is_active', 'staff', 'admin', 'last_login', 'timestamp', 'is_contribute']
+    list_display = ['email', 'is_active', 'staff', 'admin', 'last_login', 'timestamp', 'is_contribute', 'fullname']
     list_filter = ['is_active', 'staff',  'admin', 'is_contribute']
     ordering = ['email']
     filter_horizontal = []
@@ -19,7 +19,7 @@ class UserAdmin(BaseUserAdmin):
     add_form = UserAdminCreationForm    # for creating user in admin
 
     fieldsets = (
-        (None, {'fields': ('email', 'password')}),
+        (None, {'fields': ('email', 'password', "fullname")}),
         ('Personal info', {'fields': ()}), # if you have any personal info fields e.g. names, include them as strings in the empty tuple.
         ('Permissions', {'fields': ('admin', 'staff', 'is_active', 'is_contribute')})
     )
