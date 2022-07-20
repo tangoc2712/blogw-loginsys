@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if welldone %}
+        <h1>Thành công</h1>
+        <p>Tài khoản của bạn đã được đăng ký đóng góp thành công, đợi admin phê duyệt nữa nhé</p>
+    {% else %}
+        <h1>Đăng ký tài khoản đóng góp</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="đăng ký">
+        </form>
+    {% endif %}
+{% endblock %}

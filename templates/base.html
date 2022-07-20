@@ -25,6 +25,13 @@
                             </div>
                             <b>Đăng xuất</b>
                         </a>
+                    {% else %}
+                    <a href="{% url 'accounts:login' %}" class="basebox logout">
+                        <div class="header_icons ">
+                            <img src="{% static 'icons/dangxuat.svg'%}" class='header_icons logout_icons'>
+                        </div>
+                        <b>Đăng nhập</b>
+                    </a>
                     {% endif %}
                     <div>
                         <a href='#' class="basebox question">
@@ -76,8 +83,9 @@
                     </div>
                 </div>
                 <div class='sidebar-child'>
+                    {% if user.is_authenticated %}
                     <div>
-                        <a href='#' class="basebox support">
+                        <a href="{% url 'helpus:register_contribute' %}" class="basebox support">
                             <div class="header_icons">
                                 <img src="{% static 'icons/donggop.svg'%}" class='header_icons support_icons'>
                             </div>
@@ -87,6 +95,7 @@
                             </b>
                         </a>
                     </div>
+                    {% endif %}
                     <div>
                         <a href='#' class="basebox helpus">
                             <div class="header_icons">
@@ -94,7 +103,7 @@
                             </div>
                             <b>
                                 
-                                Giúp chùng tôi
+                                Giúp chúng tôi
                             </b>
                         </a>
                     </div>

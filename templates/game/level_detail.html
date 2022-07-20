@@ -16,28 +16,37 @@
 
     <div class="camera_zone"> 
         <video class="input_video" width="640px" height="360px" hidden></video>
-        <canvas class="output_canvas" width="960px" height="540px" ></canvas>
+        <div class="game_camera">
+
+            <canvas class="output_canvas" width="960" height="540" ></canvas>
+        </div>
         <div id="loadingWrap" hidden>
             <div class='loading' id='loading'>
                 <div class='loadingMsg'>Loading・・・</div>
             </div>
         </div>
     </div>
-
-    {% for level in words %}
-    <div class='level_cotainer'>
-        <div class="level_text">{{ level.word }}</div>
-    </div>
-    {% endfor %}
 </div>
+{% for level in words %}
+<div class='level_cotainer'>
+    <div class="level_text">{{ level.word }}</div>
+</div>
+{% endfor %}
 
 <style>
+    .game_camera{
+        width: 65%;
+        overflow: hidden;
+        display: block;
+        height: 100%;
+        border-radius: 7px 0px 0px 7px;
+    }
     .output_canvas {
-        
+        margin-left: -220px;
     }
     .pick_level {
         margin-left: 25%;
-        margin-top: 16px;
+        margin-top: 5%;
         /* padding: 20px; */
         width: 960px;
         height: 540px;
@@ -56,6 +65,9 @@
 </style>
 
 <script type="module">
+    //$( document ).ready(function() {
+        $(".sidebar").hide();
+    //});
     const videoElement = document.getElementsByClassName('input_video')[0];
     const canvasElement = document.getElementsByClassName('output_canvas')[0];
     const canvasCtx = canvasElement.getContext('2d');
@@ -78,7 +90,7 @@
             results.image, 0, 0, canvasElement.width, canvasElement.height);
 
         canvasCtx.globalCompositeOperation = 'source-over';
-        canvasCtx.fillStyle = '#444444b3';
+        canvasCtx.fillStyle = '#2c2c2ceb';
         canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
         drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS,
                         {color: '#CC0000', lineWidth: 5});
