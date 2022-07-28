@@ -202,12 +202,14 @@
 
 </style>
 <script type="module">
-    const LABEL = ['an_mung', 'an_ui', 'ap_dung', 'ban_khoan', 'benh_nhan', 'be_mac', 'biet', 'bieu_tang', 'bo_y_te', 'cach_ly', 'cam_do', 'cam_on', 'can', 'chap_nhan', 'chay', 'cho', 'dau', 'day_do', 'ghet', 'giup', 'ham_mo', 'hi_sinh', 'ho', 'ket_hon', 'khai_bao', 'khau_trang', 'khu_cach_ly', 'lay_benh', 'lo_lang', 'nghi_ngoi', 'nho', 'noi_xau', 'non_oi', 'phat', 'phong_van', 'phuc_hoi', 'san_se', 'sot', 'tap_luyen', 'tham', 'that_lac', 'thich', 'thuong', 'ung_ho', 'u_benh', 'vang_loi', 'virus', 'xin_phep', 'xuat_vien', 'yeu'];
+    const LABEL = ['an_mung', 'an_ui', 'ap_dung', 'ban', 'ban_khoan', 'benh_nhan', 'be_mac', 'biet', 'bieu_tang', 'bo_y_te', 'cach_ly', 'cam_do', 'cam_on', 'can', 'chap_nhan', 'chay', 'cho', 'dau', 'day_do', 'ghet', 'giup', 'ham_mo', 'hi_sinh', 'ho', 'ket_hon', 'khai_bao', 'khau_trang', 'khu_cach_ly', 'lay_benh', 'lo_lang', 'nghi_ngoi', 'nho', 'noi_xau', 'non_oi', 'phat', 'phong_van', 'phuc_hoi', 'san_se', 'sot', 'tap_luyen', 'tham', 'that_lac', 'thich', 'thuong', 'toi', 'ung_ho', 'u_benh', 'vang_loi', 'virus', 'xin_phep', 'xuat_vien', 'yeu']
     const videoElement = $('.input_video')[0];
     const canvasElement = $('.output_canvas')[0];
     const canvasCtx = canvasElement.getContext('2d');
-    let a = "{% static 'tfjs/model.json' %}"
-    console.log("aaa:", a)
+    let a = "{% static 'tfjs_new/model.json' %}"
+    console.log("aaa:", a);
+    let model = await tf.loadLayersModel(a);
+    console.log(model.summary())
     let output_array = [];
 
     function playAudio(word) {
