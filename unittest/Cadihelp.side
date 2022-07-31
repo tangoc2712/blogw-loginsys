@@ -1,0 +1,118 @@
+{
+  "id": "4130e0cf-a448-4974-a806-b5e93bc67dbf",
+  "version": "2.0",
+  "name": "Cadihelp",
+  "url": "http://127.0.0.1:8000",
+  "tests": [{
+    "id": "c97eb3be-5345-4a9b-b12e-ced4f3ca8f3d",
+    "name": "login",
+    "commands": [{
+      "id": "499f543d-8b06-4cc8-bc27-63821e5087d6",
+      "comment": "",
+      "command": "open",
+      "target": "/accounts/login/",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "9808dc19-2c77-4ed3-8213-f04b1738dcae",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1552x832",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "2e2fb84f-c0ab-40bc-baf1-42f2a5f13335",
+      "comment": "",
+      "command": "click",
+      "target": "id=id_email",
+      "targets": [
+        ["id=id_email", "id"],
+        ["name=email", "name"],
+        ["css=#id_email", "css:finder"],
+        ["xpath=//input[@id='id_email']", "xpath:attributes"],
+        ["xpath=//form[@id='signup-form']/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "a68ff8c2-0070-43cb-a1fe-b4faa04a74ed",
+      "comment": "",
+      "command": "type",
+      "target": "id=id_email",
+      "targets": [
+        ["id=id_email", "id"],
+        ["name=email", "name"],
+        ["css=#id_email", "css:finder"],
+        ["xpath=//input[@id='id_email']", "xpath:attributes"],
+        ["xpath=//form[@id='signup-form']/div/input", "xpath:idRelative"],
+        ["xpath=//div/input", "xpath:position"]
+      ],
+      "value": "taquangngoc.hh31@gmail.com"
+    }, {
+      "id": "81c1a35b-21fa-4c9f-b581-76d14bd98d3a",
+      "comment": "",
+      "command": "type",
+      "target": "id=id_password",
+      "targets": [
+        ["id=id_password", "id"],
+        ["name=password", "name"],
+        ["css=#id_password", "css:finder"],
+        ["xpath=//input[@id='id_password']", "xpath:attributes"],
+        ["xpath=//form[@id='signup-form']/div[2]/input", "xpath:idRelative"],
+        ["xpath=//div[2]/input", "xpath:position"]
+      ],
+      "value": "12345678"
+    }, {
+      "id": "7b91a076-e53b-4e70-b8fa-5bd4623fcec9",
+      "comment": "",
+      "command": "click",
+      "target": "id=submit",
+      "targets": [
+        ["id=submit", "id"],
+        ["name=submit", "name"],
+        ["css=#submit", "css:finder"],
+        ["xpath=//input[@id='submit']", "xpath:attributes"],
+        ["xpath=//form[@id='signup-form']/div[3]/input", "xpath:idRelative"],
+        ["xpath=//div[3]/input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "4510bd98-77ee-4b4b-9ad3-a0173fed61dd",
+      "comment": "",
+      "command": "click",
+      "target": "css=.login_name",
+      "targets": [
+        ["css=.login_name", "css:finder"],
+        ["xpath=//div[2]/div/div/div", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "301679f2-0c4a-4b60-b574-fed5c6a435ee",
+      "comment": "",
+      "command": "assertText",
+      "target": "css=.login_name",
+      "targets": [
+        ["css=.login_name", "css:finder"],
+        ["xpath=//div[2]/div/div/div", "xpath:position"]
+      ],
+      "value": "Xin chào, taquangngoc.hh31 !"
+    }, {
+      "id": "b5605dfd-6343-4f30-889c-a65403ee8d62",
+      "comment": "",
+      "command": "close",
+      "target": "",
+      "targets": [],
+      "value": ""
+    }]
+  }],
+  "suites": [{
+    "id": "30626a9e-8dbd-49af-bdb0-73c975c91bb0",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["c97eb3be-5345-4a9b-b12e-ced4f3ca8f3d"]
+  }],
+  "urls": ["http://127.0.0.1:8000/"],
+  "plugins": []
+}
