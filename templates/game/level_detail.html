@@ -27,17 +27,32 @@
         </div>
     </div>
 </div>
-{% for level in words %}
-<div class='level_cotainer'>
-    <div class="level_text">{{ level.word }}</div>
+<div class="text_output_zone"> 
+    <div class="text_loadding" hidden></div>
+    <div class="text_output"></div>
 </div>
-{% endfor %}
 
 <style>
+    .text_output_zone {
+        width: 960px;
+        border-radius: 7px;
+        padding: 7px;
+        height: 60px;
+        background-color: #ffffff78;
+        box-shadow: 10px 10px #c7c7c75e;
+        margin-left: 25%;
+        margin-top: 50px;
+    }
+
+    .text_output {
+        padding-left: 5px;
+    }
+
+    /*
     .output_canvas, .input_video {
         transform: rotateY(180deg);
-        -webkit-transform:rotateY(180deg); /* Safari and Chrome */
-        -moz-transform:rotateY(180deg); /* Firefox */
+        -webkit-transform:rotateY(180deg); 
+        -moz-transform:rotateY(180deg); 
         border-radius: 7px;
         padding-left: 0;
         padding-right: 0;
@@ -45,6 +60,7 @@
         margin-right: auto;
         display: block;
     }
+    */
     
     .game_camera{
         width: 65%;
@@ -80,30 +96,126 @@
     //$( document ).ready(function() {
         $(".sidebar").hide();
     //});
-    const videoElement = document.getElementsByClassName('input_video')[0];
-    const canvasElement = document.getElementsByClassName('output_canvas')[0];
+    const LABEL = ['a', 'aa', 'aw', 'b', 'c', 'd', 'dd', 'e', 'ee', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'oo', 'ow', 'p', 'q', 'r', 's', 't', 'u', 'uw', 'v', 'x', 'y']
+    let list_character = {{ words|safe }};
+    let global_point = 0;
+    console.log("AA: ", global_point);
+    let global_total_point = 0;
+    const videoElement = $('.input_video')[0];
+    const canvasElement = $('.output_canvas')[0];
     const canvasCtx = canvasElement.getContext('2d');
-    
-    function onResults(results) {
-        canvasCtx.save();
-        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-        canvasCtx.drawImage(results.segmentationMask, 0, 0,
-        canvasElement.width, canvasElement.height);
-        
-        
-        
-        // Only overwrite existing pixels.
-        //canvasCtx.globalCompositeOperation = 'source-in';
+    let a = "{% static 'tfjs_character_lstm/model.json' %}"
+    let output_array = [];
 
-        // Only overwrite missing pixels.
+    
+    let count = 0;
+    
+
+    async function make_predict(keypoint) {
+        let word = list_character[count]
+        let model = await tf.loadLayersModel(a);
+        let tensors = tf.expandDims(tf.tensor2d(keypoint), 0)
+        // make predict
+        let predictions = await model.predict(tensors);
+        predictions = predictions.dataSync();
+        let word_index = LABEL.indexOf(word);
+
+        console.log("ok", predictions);
+        console.log("Kết quả nè, ", word, ' : ', predictions[word_index])
+        let point = Math.round(predictions[word_index] * 100);
+
+        if (point >= 90) {
+            count++;
+            console.log("count:", count);
+            if (count == list_character.length){
+                window.location.href = "{% url 'game:levels' %}"
+            }
+        }
+        global_point = point;
+        $(".text_output").text(point);
+        const max = Math.max(...predictions);
+        const index = predictions.indexOf(max);
+        console.log(LABEL[index]);
+        /*
+        output_array.push(LABEL[index]);
+
+        let output_array_five = output_array.slice(Math.max(output_array.length - 10, 0));
+        let text = output_array_five.join(",    ");
+        $(".text_output").text(text);
+        */
+        console.log(max);
+    }
+    
+    
+    function get_extract_keypoint(results) {
+        let left_hand_per_frame = []
+        let right_hand_per_frame = []
+        let pose_per_frame = []
+        let face_per_frame = []
+        let left_hand = results.leftHandLandmarks
+        let right_hand = results.rightHandLandmarks
+        let pose = results.poseLandmarks
+        let face = results.faceLandmarks
+        if (left_hand) {
+            for (let i in left_hand ){
+            //    left_hand_per_frame.push(a[i].x, a[i].y, a[i].z)
+                left_hand_per_frame = [...left_hand_per_frame, left_hand[i].x, left_hand[i].y, left_hand[i].z]
+            }
+
+        } else {left_hand_per_frame = Array(63).fill(0);}
+        /*
+        if( right_hand ) {
+
+            for (let i in right_hand ){
+                //    left_hand_per_frame.push(a[i].x, a[i].y, a[i].z)
+                right_hand_per_frame = [...right_hand_per_frame, right_hand[i].x, right_hand[i].y, right_hand[i].z]
+            }
+        } else {right_hand_per_frame = Array(63).fill(0);}
+
+        if( pose ) {
+            for (let i in pose ){
+                //    left_hand_per_frame.push(a[i].x, a[i].y, a[i].z)
+                    pose_per_frame = [...pose_per_frame, pose[i].x, pose[i].y, pose[i].z, pose[i].visibility]
+            }
+        } else {pose_per_frame = Array(132).fill(0);}
+        if( face ) {
+            for (let i =0; i < face.length - 10; i++ ){
+                //    left_hand_per_frame.push(a[i].x, a[i].y, a[i].z)
+                face_per_frame = [...face_per_frame, face[i].x, face[i].y, face[i].z]
+            }
+        } else {face_per_frame = Array(1404).fill(0);}
+        */
+        return [].concat(left_hand_per_frame)
+
+    }
+    let i = 0;
+    let keypoint = [];
+    let check_full_load = 0;
+
+    async function onResults(results) {
+        //$('.text_loadding').attr("hidden", true);
+        $('#loadingWrap').attr("hidden", true);
         
-        //canvasCtx.globalCompositeOperation = 'destination-atop';
+        canvasCtx.save();
+
         canvasCtx.drawImage(
             results.image, 0, 0, canvasElement.width, canvasElement.height);
 
         canvasCtx.globalCompositeOperation = 'source-over';
         canvasCtx.fillStyle = '#2c2c2ceb';
         canvasCtx.fillRect(0, 0, canvasElement.width, canvasElement.height);
+                
+        if (results.leftHandLandmarks) {
+            //$('.text_loadding').attr("hidden", false);
+            keypoint.push(get_extract_keypoint(results))
+            if (keypoint.length == 30) {
+                console.log("tôi bắt đầu dự đoán đây")
+                make_predict(keypoint)
+                keypoint = []
+            }
+        }
+        
+
         drawConnectors(canvasCtx, results.leftHandLandmarks, HAND_CONNECTIONS,
                         {color: '#CC0000', lineWidth: 5});
         drawConnectors(canvasCtx, results.rightHandLandmarks, HAND_CONNECTIONS,
@@ -116,6 +228,7 @@
     const holistic = new Holistic({locateFile: (file) => {
       return `https://cdn.jsdelivr.net/npm/@mediapipe/holistic/${file}`;
     }});
+
     holistic.setOptions({
       modelComplexity: 1,
       smoothLandmarks: true,
@@ -126,13 +239,13 @@
       minTrackingConfidence: 0.5
     });
     holistic.onResults(onResults);
-    
+
     const camera = new Camera(videoElement, {
-      onFrame: async () => {
-        await holistic.send({image: videoElement});
-      },
-      width: 1280,
-      height: 720
+        onFrame: async () => {
+            await holistic.send({image: videoElement});
+        },
+        width: 960,
+        height: 540
     });
     camera.start();
     </script>

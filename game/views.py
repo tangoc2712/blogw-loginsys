@@ -1,4 +1,6 @@
 from django.shortcuts import render
+import json 
+
 from .models import *
 # Create your views here.
 
@@ -11,9 +13,10 @@ def levels(request):
 
 def level_detail(request, level_id):
     level = Level.objects.filter(level=level_id).first()
-    words = Word.objects.filter(level=level)
+    words = Word.objects.filter(level=level).order_by('word')
+    list_word = [word.word for word in words]
     contexts = {
-        "words": words,
+        "words": list_word,
     }
     return render(request, "game/level_detail.html", contexts)
 
