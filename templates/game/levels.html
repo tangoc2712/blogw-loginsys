@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block home %}
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<a href="{% url 'home' %}" class="back_button">
+    <img src="{% static 'icons/dangxuat.svg'%}" class='header_icons logout_icons'> Quay lại
+</a>
 <div class="pick_level">
     {% for level in levels %}
     <div class='level_cotainer'>
@@ -12,12 +18,18 @@
 </div>
 
 <style>
+    .back_button {
+        padding-left: 29px;
+        position: absolute;
+        top: 49px;
+        color: black;
+    }
     div:nth-of-type(even) {
         grid-column: 2;
     }
     .pick_level {
-        margin-left: 25%;
-        margin-top: 16px;
+        margin-left: 30%;
+        margin-top: 40px;
         /* padding: 20px; */
         width: 960px;
         height: 540px;
@@ -49,4 +61,7 @@
         text-decoration: none;
       }
 </style>
+<script>
+    $(".sidebar").hide();
+</script>
 {% endblock %}

@@ -12,40 +12,89 @@
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
     <link href='https://css.gg/volume.css' rel='stylesheet'>
 </head>
+
+<a href="{% url 'game:levels' %}" class="back_button">
+    <img src="{% static 'icons/dangxuat.svg'%}" class='header_icons logout_icons'> Quay lại
+</a>
+
+<div class="text_output_zone"> 
+    <div class="text_output"></div>
+    <div class="word_output"></div>
+</div>
 <div class="pick_level">
 
+    <img class="example_gif" src="">
     <div class="camera_zone"> 
         <video class="input_video" width="640px" height="360px" hidden></video>
         <div class="game_camera">
-
             <canvas class="output_canvas" width="960" height="540" ></canvas>
-        </div>
-        <div id="loadingWrap" hidden>
-            <div class='loading' id='loading'>
-                <div class='loadingMsg'>Loading・・・</div>
-            </div>
         </div>
     </div>
 </div>
+
 <div class="text_output_zone"> 
-    <div class="text_loadding" hidden></div>
-    <div class="text_output"></div>
+    <div class="point_output">Tổng điểm </div>
 </div>
 
-<style>
-    .text_output_zone {
-        width: 960px;
-        border-radius: 7px;
-        padding: 7px;
-        height: 60px;
-        background-color: #ffffff78;
-        box-shadow: 10px 10px #c7c7c75e;
-        margin-left: 25%;
-        margin-top: 50px;
-    }
 
+<style>
+    .example_gif {
+        border-radius: 7px 0px 0px 7px;
+        width: 500px;
+        height: 500px;
+    }
+    .back_button {
+        padding-left: 29px;
+        position: absolute;
+        top: 49px;
+        color: black;
+    }
+    .text_output_zone {
+        height: 60px;
+        width: 960px;
+        /*
+        background-color: #ffffff78;
+        border-radius: 9px;
+        box-shadow: 10px 10px #c7c7c75e;
+        */
+        margin-left: 19%;
+        margin-top: 50px;
+        display:flex;
+        justify-content: space-between;
+    }
+    .word_output {
+        font-size: 21px;
+        font-weight: bold;
+        padding: 15px;
+        color: #ba1616;
+        background-color: #ffffff78;
+        width: 80px;
+        height: 60px;
+        border-radius: 9px;
+        text-align: center;
+    }
+    .point_output {
+        font-size: 17px;
+    font-weight: bold;
+    padding: 15px;
+    color: #5d41c2;
+    background-color: #ffffff78;
+    width: 227px;
+    height: 60px;
+    border-radius: 9px;
+    text-align: center;
+    align-items: center;
+    margin-left: 38%;
+    }
     .text_output {
-        padding-left: 5px;
+        font-size: 18px;
+        font-weight: bold;
+        color: #5d41c2;
+        padding: 20px;
+        background-color: #ffffff78;
+        width: 80px;
+        height: 60px;
+        border-radius: 9px;
     }
 
     /*
@@ -67,14 +116,14 @@
         overflow: hidden;
         display: block;
         height: 100%;
-        border-radius: 7px 0px 0px 7px;
+        border-radius: 0px 7px 7px 0px;
     }
     .output_canvas {
         margin-left: -220px;
     }
     .pick_level {
-        margin-left: 25%;
-        margin-top: 5%;
+        margin-left: 19%;
+        margin-top: 1.5%;
         /* padding: 20px; */
         width: 960px;
         height: 540px;
@@ -82,7 +131,9 @@
         border-radius: 7px;
         display: flex;
         justify-content: space-between;
-        /* grid: auto / auto auto; */
+        /* 
+        grid: auto / auto auto; 
+        */
         box-shadow: 10px 10px #c7c7c75e;
         flex-direction: row;
     }
@@ -92,10 +143,10 @@
     }
 </style>
 
-<script type="module">
-    //$( document ).ready(function() {
-        $(".sidebar").hide();
-    //});
+<script>
+    $(".sidebar").hide();
+    alert("Sử dụng TAY TRÁI và cố gắng đạt trên 90% để tiếp tục với các chữ cái tiếp theo nhé!")
+
     const LABEL = ['a', 'aa', 'aw', 'b', 'c', 'd', 'dd', 'e', 'ee', 'g', 'h', 'i', 'k', 'l', 'm', 'n', 'o', 'oo', 'ow', 'p', 'q', 'r', 's', 't', 'u', 'uw', 'v', 'x', 'y']
     let list_character = {{ words|safe }};
     let global_point = 0;
@@ -110,6 +161,9 @@
     
     let count = 0;
     
+    $(".word_output").text(list_character[0]);
+    let url = "{% static 'images/' %}" + list_character[0] + ".png"
+    $(".example_gif").attr("src", url);
 
     async function make_predict(keypoint) {
         let word = list_character[count]
@@ -126,13 +180,18 @@
 
         if (point >= 90) {
             count++;
+            global_total_point += point;
+            $(".word_output").text(list_character[count]);
+            $(".point_output").text(global_total_point + " điểm");
+            $(".example_gif").attr("src", "{% static 'images/' %}" + list_character[count] + ".png");
             console.log("count:", count);
             if (count == list_character.length){
+                alert("Chúc mừng bạn đã qua level với ", global_total_point, " điểm")
                 window.location.href = "{% url 'game:levels' %}"
             }
         }
         global_point = point;
-        $(".text_output").text(point);
+        $(".text_output").text(point + "%");
         const max = Math.max(...predictions);
         const index = predictions.indexOf(max);
         console.log(LABEL[index]);
