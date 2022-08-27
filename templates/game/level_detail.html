@@ -186,7 +186,7 @@
             $(".example_gif").attr("src", "{% static 'images/' %}" + list_character[count] + ".png");
             console.log("count:", count);
             if (count == list_character.length){
-                alert("Chúc mừng bạn đã qua level với ", global_total_point, " điểm")
+                alert("Chúc mừng bạn đã qua level với "+  global_total_point+  " điểm")
                 window.location.href = "{% url 'game:levels' %}"
             }
         }
