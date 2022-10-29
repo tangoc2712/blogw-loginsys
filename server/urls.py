@@ -25,4 +25,7 @@ urlpatterns = [
     path("game/", include('game.urls')),
     path("", home, name="home"),
     path("helpus/", include('helpus.urls')),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] 
+
+if settings.DEBUG:
+    urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

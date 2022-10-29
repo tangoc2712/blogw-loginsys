@@ -8,6 +8,11 @@ a {
     text-decoration: none;
 }
 
+a:hover {
+    color: #008666;
+    text-decoration: none;
+}
+
 h1 {
     font-weight: bold;
     border-bottom: 4px solid #cf820e79;
@@ -55,11 +60,13 @@ h2 {
     height: 100%;
     z-index:99;
     padding: 5px;
+    padding: 15px;
 }
 .header_icons {
     padding-right: 5px;
 }
 .login_logo_img{
+    padding-top: 1%;
     max-width: 160px;
 }
 .sidebar a {
@@ -76,7 +83,7 @@ color: white;
 }
 
 .sidebar a:hover:not(.active) {
-background-color: #03989e;
+background-color: #008666;
 color: white;
 }
 

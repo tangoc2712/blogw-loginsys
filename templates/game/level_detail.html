@@ -19,6 +19,7 @@
 
 <div class="text_output_zone"> 
     <div class="text_output"></div>
+    <div class="character_output"></div>
     <div class="word_output"></div>
 </div>
 <div class="pick_level">
@@ -62,11 +63,23 @@
         display:flex;
         justify-content: space-between;
     }
-    .word_output {
+
+    .character_output {
         font-size: 21px;
         font-weight: bold;
         padding: 15px;
         color: #ba1616;
+        background-color: #ffffff78;
+        width: 80px;
+        height: 60px;
+        border-radius: 9px;
+        text-align: center;
+    }
+    .word_output {
+        font-size: 22px;
+        font-weight: bold;
+        padding: 15px;
+        color: #008666;
         background-color: #ffffff78;
         width: 80px;
         height: 60px;
@@ -160,31 +173,41 @@
 
     
     let count = 0;
-    
-    $(".word_output").text(list_character[0]);
-    let url = "{% static 'images/' %}" + list_character[0] + ".png"
+    let count_character = 0;
+    let character = "";
+    let word_to_predict = list_character[0];
+    $(".word_output").text(word_to_predict);
+    $(".character_output").text(word_to_predict[0]);
+ 
+    let url = "{% static 'images/' %}" + word_to_predict[0] + ".png"
     $(".example_gif").attr("src", url);
 
     async function make_predict(keypoint) {
         let word = list_character[count]
+        let character = word[count_character]
         let model = await tf.loadLayersModel(a);
         let tensors = tf.expandDims(tf.tensor2d(keypoint), 0)
         // make predict
         let predictions = await model.predict(tensors);
         predictions = predictions.dataSync();
-        let word_index = LABEL.indexOf(word);
+        let word_index = LABEL.indexOf(character);
 
         console.log("ok", predictions);
-        console.log("Kết quả nè, ", word, ' : ', predictions[word_index])
+        console.log("Kết quả nè, ", character, ' : ', predictions[word_index])
         let point = Math.round(predictions[word_index] * 100);
 
         if (point >= 90) {
-            count++;
+            count_character++;
             global_total_point += point;
-            $(".word_output").text(list_character[count]);
+            $(".character_output").text(word_to_predict[count_character]);
             $(".point_output").text(global_total_point + " điểm");
-            $(".example_gif").attr("src", "{% static 'images/' %}" + list_character[count] + ".png");
+            $(".example_gif").attr("src", "{% static 'images/' %}" + word_to_predict[count_character] + ".png");
             console.log("count:", count);
+            if (count_character == word.length){
+                count++;
+                console.log(word, character)
+                $(".word_output").text(list_character[count]);
+            }
             if (count == list_character.length){
                 alert("Chúc mừng bạn đã qua level với "+  global_total_point+  " điểm")
                 window.location.href = "{% url 'game:levels' %}"

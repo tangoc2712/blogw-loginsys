@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if not welldone %}
+        <h1>Chưa được cấp quyền</h1>
+        <p>Tài khoản của bạn chưa được cấp quyền để đóp góp.</p>
+        <p>Nhấn vào <a href="{% url 'helpus:register_contribute' %}">đây</a> để đăng ký nhé!</p>
+    {% else %}
+    <div class="form-register" >
+        <h1>Đóng góp dữ liệu cho chúng mình tại đây</h1>
+        <form method="post" enctype="multipart/form-data" style="display: flex;
+        flex-direction: column;
+        padding-top:15px;
+        flex-wrap: wrap;">
+            {% csrf_token %}
+            <label for="word">Từ tiếng Việt: </label>
+            <input type="text" id="word" name="word"><br>
+            <label for="document">File video: </label>
+            <input type="file" name="document" id="document"><br>
+            <button type="submit" style="width: 15%;border-radius: 5px;"> đăng ký</button>
+        </form>
+    </div>
+    {% endif %}
+{% endblock %}

@@ -1,14 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
+
+{% if welldone1 %}
+    <h1>Tài khoản đã được đăng ký</h1>
+    <p>Tài khoản của bạn đã được đăng ký thành công.</p>
+    <p>Nhấn vào <a href="{% url 'helpus:contribute' %}">đây</a> để đóng góp nhé!</p>
+
+{% else %}
+
     {% if welldone %}
         <h1>Thành công</h1>
-        <p>Tài khoản của bạn đã được đăng ký đóng góp thành công, đợi admin phê duyệt nữa nhé</p>
+        <p>Tài khoản của bạn đã được đăng ký đóng góp thành công.</p>
+        <p>Admin sẽ phê duyệt tài khoản của bạn sớm nhất.</p>
     {% else %}
+    <div class="form-register" >
         <h1>Đăng ký tài khoản đóng góp</h1>
-        <form method="post">
+        <form method="post" enctype="multipart/form-data" style="display: flex;
+        flex-direction: column;
+        padding-top:15px;
+        flex-wrap: wrap;">
             {% csrf_token %}
             {{ form.as_p }}
-            <input type="submit" value="đăng ký">
+            <button type="submit" style="width: 15%;border-radius: 5px;"> đăng ký</button>
         </form>
+    </div>
     {% endif %}
+{% endif %}
+    
 {% endblock %}

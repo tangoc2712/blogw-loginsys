@@ -35,15 +35,15 @@ Visit https://cadihelp.heroku.com for more, if you need detail design and deep l
 ## Features
 - Recognition with real-time video input and corresponding audio, word output
 
- ![](images\main.png)
+ ![](https://raw.githubusercontent.com/tangoc2712/blogw-loginsys/main/images/main.png)
 
  - Gameplay to learn Alphabet character VSL
 
-![](images\game.png)
+![](https://raw.githubusercontent.com/tangoc2712/blogw-loginsys/main/images/game.png)
 
 - Blogging
 
-![](images\blog.jpeg)
+![](https://raw.githubusercontent.com/tangoc2712/blogw-loginsys/main/images/blog.jpeg)
 
 ## Reference
 - [rabBit64](https://github.com/LeeYongchao/Sign-language-recognition-with-RNN-and-Mediapipe)

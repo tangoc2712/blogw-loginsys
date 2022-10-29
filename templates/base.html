@@ -47,18 +47,27 @@
                 </div>
                 <div class='sidebar-child'>
                     <div>
+                        <a href="{% url 'home' %}" class="basebox setting">
+                            <div class="header_icons">
+                                <img src="{% static 'icons/setting.svg'%}" class='header_icons setting_icons'>
+                            </div>
+                            <b>
+                                
+                                Trang chủ
+                            </b>
+                        </a>
+                    </div>
+                    <div>
                         <a href='{% url "blog:post_list" %}' class="basebox lession">
                             <div class="header_icons">
                                 <img src="{% static 'icons/baihoc.svg'%}" class='header_icons lesson_icons'>
                             </div>
                             <b>
                                 
-                                Các bài học
+                                Blog    
                             </b>
                         </a>
                     </div>
-                </div>
-                <div class='sidebar-child'>
                     <div>
                         <a href="{% url 'game:levels' %}"  class="basebox gameplay">
                             <div class="header_icons">
@@ -70,6 +79,9 @@
                             </b>
                         </a>
                     </div>
+                </div>
+                {% comment %} <div class='sidebar-child'>
+                    
                     <div>
                         <a href='#' class="basebox youtube">
                             <div class="header_icons">
@@ -81,7 +93,7 @@
                             </b>
                         </a>
                     </div>
-                </div>
+                </div> {% endcomment %}
                 <div class='sidebar-child'>
                     {% if user.is_authenticated %}
                     <div>
@@ -90,14 +102,15 @@
                                 <img src="{% static 'icons/donggop.svg'%}" class='header_icons support_icons'>
                             </div>
                             <b>
-                                
+                                Đăng ký
+                            <br>
                                 Đóng góp
                             </b>
                         </a>
                     </div>
                     {% endif %}
                     <div>
-                        <a href='#' class="basebox helpus">
+                        <a href="{% url 'helpus:contribute' %}" class="basebox helpus">
                             <div class="header_icons">
                                 <img src="{% static 'icons/caithien.svg'%}" class='header_icons helppus_icons'>
                             </div>
@@ -108,7 +121,7 @@
                         </a>
                     </div>
                 </div>
-                <div class='sidebar-child'>
+                {% comment %} <div class='sidebar-child'>
                     <div>
                         <a href='#' class="basebox info">
                             <div class="header_icons">
@@ -120,18 +133,8 @@
                             </b>
                         </a>
                     </div>
-                    <div>
-                        <a href="{% url 'home' %}" class="basebox setting">
-                            <div class="header_icons">
-                                <img src="{% static 'icons/setting.svg'%}" class='header_icons setting_icons'>
-                            </div>
-                            <b>
-                                
-                                Trang chủ
-                            </b>
-                        </a>
-                    </div>
-                </div>
+                    
+                </div> {% endcomment %}
                 {% comment %} <h3>Bài viết mới nhất</h3>
                 
                 {% show_latest_posts as latest_posts %}
